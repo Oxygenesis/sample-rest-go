@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=gorm
+      - DB_PASSWORD=gorm
+      - DB_NAME=gorm
+      - DB_PORT=5432
+
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: gorm
+      POSTGRES_PASSWORD: gorm
+      POSTGRES_DB: gorm
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

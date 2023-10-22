@@ -1,0 +1,172 @@
+basePath: /v1
+definitions:
+  main.LoginInfo:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  main.User:
+    properties:
+      age:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
+    type: object
+host: localhost:8082
+info:
+  contact: {}
+  description: API for managing users.
+  license: {}
+  title: User Service API
+  version: "1.0"
+paths:
+  /api/users:
+    get:
+      description: Fetch all users with optional pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List users
+    post:
+      consumes:
+      - application/json
+      description: Add a new user
+      parameters:
+      - description: User Information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/main.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created user
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create new user
+  /api/users/{id}:
+    delete:
+      description: Remove a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Successfully deleted user
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a user
+    get:
+      description: Fetch a single user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.User'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a user by ID
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Verify user credentials and return a JWT
+      parameters:
+      - description: Login Information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/main.LoginInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Authentication successful
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Authenticate user and get token
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
